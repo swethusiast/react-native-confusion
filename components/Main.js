@@ -10,6 +10,8 @@ import Contact from './ContactUs';
 import Dishdetail from './Dishdetail';
 import Home from './Home';
 import Menu from './Menu';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -111,10 +113,14 @@ function CustomDrawerContent(props) {
 export default class Main extends Component {
     render() {
         return (
-            <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }}>
+            <SafeAreaProvider style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }}>
                 <NavigationContainer>
                     <Drawer.Navigator
                         initialRouteName="Home"
+                        drawerContentOptions={{
+                            activeTintColor: '#e91e63',
+                            itemStyle: { marginVertical: 30 },
+                        }}
                         drawerContent={(props) => <CustomDrawerContent {...props} />}
                     >
                         <Drawer.Screen
@@ -159,7 +165,7 @@ export default class Main extends Component {
                         />
                     </Drawer.Navigator>
                 </NavigationContainer>
-            </View>
+            </SafeAreaProvider>
         );
     }
 }
