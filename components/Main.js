@@ -11,7 +11,19 @@ import Dishdetail from './Dishdetail';
 import Home from './Home';
 import Menu from './Menu';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
+import { connect } from 'react-redux';
+import { fetchComments, fetchDishes, fetchLeaders, fetchPromotions } from '../redux/ActionCreators';
+const mapStateToProps = (state) => {
+    return {
+        leaders: state.leaders,
+    };
+};
+const mapDispatchToProps = (dispatch) => ({
+    fetchDishes: () => dispatch(fetchDishes()),
+    fetchComments: () => dispatch(fetchComments()),
+    fetchLeaders: () => dispatch(fetchLeaders()),
+    fetchPromotions: () => dispatch(fetchPromotions()),
+});
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -20,7 +32,7 @@ const screenOptions = (navigation) => {
         headerStyle: {
             backgroundColor: '#512DA8',
         },
-        headerTintColor: '#fff',
+        headerTintColor: '#000',
         headerTitleStyle: { color: '#fff' },
         gestureEnabled: true,
         headerLeftContainerStyle: { padding: 20 },
@@ -110,7 +122,13 @@ function CustomDrawerContent(props) {
         </DrawerContentScrollView>
     );
 }
-export default class Main extends Component {
+export class Main extends Component {
+    componentDidMount() {
+        this.props.fetchDishes();
+        this.props.fetchLeaders();
+        this.props.fetchPromotions();
+        this.props.fetchComments();
+    }
     render() {
         return (
             <SafeAreaProvider style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }}>
@@ -118,8 +136,10 @@ export default class Main extends Component {
                     <Drawer.Navigator
                         initialRouteName="Home"
                         drawerContentOptions={{
-                            activeTintColor: '#e91e63',
-                            itemStyle: { marginVertical: 30 },
+                            activeTintColor: '#512DA8',
+                            itemStyle: {
+                                marginVertical: 5,
+                            },
                         }}
                         drawerContent={(props) => <CustomDrawerContent {...props} />}
                     >
@@ -127,9 +147,7 @@ export default class Main extends Component {
                             name="Home"
                             options={{
                                 drawerLabel: 'Home',
-                                drawerIcon: ({ tintColor, focused }) => (
-                                    <Icon name="home" size={24} color={tintColor} />
-                                ),
+                                drawerIcon: ({ color }) => <Icon name="home" size={24} color={color} />,
                             }}
                             component={HomeStack}
                         />
@@ -137,9 +155,7 @@ export default class Main extends Component {
                             name="About"
                             options={{
                                 drawerLabel: 'About',
-                                drawerIcon: ({ tintColor, focused }) => (
-                                    <Icon name="info" size={24} color={tintColor} />
-                                ),
+                                drawerIcon: ({ color }) => <Icon name="info" size={24} color={color} />,
                             }}
                             component={AboutStack}
                         />
@@ -147,9 +163,7 @@ export default class Main extends Component {
                             name="Menu"
                             options={{
                                 drawerLabel: 'Menu',
-                                drawerIcon: ({ tintColor, focused }) => (
-                                    <Icon name="view-list" size={24} color={tintColor} />
-                                ),
+                                drawerIcon: ({ color }) => <Icon name="view-list" size={24} color={color} />,
                             }}
                             component={RootStack}
                         />
@@ -157,9 +171,7 @@ export default class Main extends Component {
                             name="Contact"
                             options={{
                                 drawerLabel: 'Contact',
-                                drawerIcon: ({ tintColor, focused }) => (
-                                    <Icon name="contact-mail" size={24} color={tintColor} />
-                                ),
+                                drawerIcon: ({ color }) => <Icon name="contact-mail" size={24} color={color} />,
                             }}
                             component={ContactStack}
                         />
@@ -169,6 +181,8 @@ export default class Main extends Component {
         );
     }
 }
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

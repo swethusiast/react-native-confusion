@@ -5,6 +5,7 @@ export const fetchComments = () => (dispatch) => {
     return fetch(baseUrl + 'comments')
         .then(
             (response) => {
+                console.log(baseUrl);
                 if (response.ok) {
                     return response;
                 } else {
@@ -14,8 +15,8 @@ export const fetchComments = () => (dispatch) => {
                 }
             },
             (error) => {
-                let error = new Error(error.message);
-                throw error;
+                let errMess = new Error(error.message);
+                throw errMess;
             },
         )
         .then((response) => response.json())
@@ -47,8 +48,8 @@ export const fetchDishes = () => (dispatch) => {
                 }
             },
             (error) => {
-                let error = new Error(error.message);
-                throw error;
+                let errMess = new Error(error.message);
+                throw errMess;
             },
         )
         .then((response) => response.json())
@@ -84,8 +85,8 @@ export const fetchPromotions = () => (dispatch) => {
                 }
             },
             (error) => {
-                let error = new Error(error.message);
-                throw error;
+                let errMess = new Error(error.message);
+                throw errMess;
             },
         )
         .then((response) => response.json())
@@ -122,8 +123,8 @@ export const fetchLeaders = () => (dispatch) => {
                 }
             },
             (error) => {
-                let error = new Error(error.message);
-                throw error;
+                let errMess = new Error(error.message);
+                throw errMess;
             },
         )
         .then((response) => response.json())
