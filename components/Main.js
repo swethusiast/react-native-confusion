@@ -8,6 +8,8 @@ import { Icon } from 'react-native-elements';
 import About from './AboutUs';
 import Contact from './ContactUs';
 import Dishdetail from './Dishdetail';
+import Reservation from './Reservation';
+
 import Home from './Home';
 import Menu from './Menu';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -45,6 +47,16 @@ function HomeStack() {
     return (
         <Stack.Navigator initialRouteName="Home" screenOptions={({ navigation, route }) => screenOptions(navigation)}>
             <Stack.Screen name="Home" component={Home} options={{ title: 'Home' }} />
+        </Stack.Navigator>
+    );
+}
+function ReservationStack() {
+    return (
+        <Stack.Navigator
+            initialRouteName="Reservation"
+            screenOptions={({ navigation, route }) => screenOptions(navigation)}
+        >
+            <Stack.Screen name="Reservation" component={Reservation} options={{ title: 'Reservation' }} />
         </Stack.Navigator>
     );
 }
@@ -151,6 +163,7 @@ export class Main extends Component {
                             }}
                             component={HomeStack}
                         />
+
                         <Drawer.Screen
                             name="About"
                             options={{
@@ -174,6 +187,16 @@ export class Main extends Component {
                                 drawerIcon: ({ color }) => <Icon name="contact-mail" size={24} color={color} />,
                             }}
                             component={ContactStack}
+                        />
+                        <Drawer.Screen
+                            name="Reserve Table"
+                            options={{
+                                drawerLabel: 'Reserve Table',
+                                drawerIcon: ({ color }) => (
+                                    <Icon name="cutlery" type="font-awesome" size={24} color={color} />
+                                ),
+                            }}
+                            component={ReservationStack}
                         />
                     </Drawer.Navigator>
                 </NavigationContainer>

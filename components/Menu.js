@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, SafeAreaView, Text } from 'react-native';
+import { FlatList, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { Tile } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -16,19 +16,18 @@ class Menu extends Component {
 
         const renderMenuItem = ({ item, index }) => {
             return (
-                <Tile
-                    key={index}
-                    title={item.name}
-                    caprion={item.description}
-                    featured
-                    onPress={() => {
-                        console.log('====================================');
-                        console.log(item.id);
-                        console.log('====================================');
-                        navigate('Dishdetail', { dishId: item.id });
-                    }}
-                    imageSrc={{ uri: baseUrl + item.image }}
-                />
+                <TouchableOpacity>
+                    <Tile
+                        key={index}
+                        title={item.name}
+                        caprion={item.description}
+                        featured
+                        onPress={() => {
+                            navigate('Dishdetail', { dishId: item.id });
+                        }}
+                        imageSrc={{ uri: baseUrl + item.image }}
+                    />
+                </TouchableOpacity>
             );
         };
         if (this.props.dishes.isLoading) {
