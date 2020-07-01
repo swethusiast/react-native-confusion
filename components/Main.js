@@ -9,6 +9,7 @@ import About from './AboutUs';
 import Contact from './ContactUs';
 import Dishdetail from './Dishdetail';
 import Reservation from './Reservation';
+import Favorites from './Favorites';
 
 import Home from './Home';
 import Menu from './Menu';
@@ -57,6 +58,16 @@ function ReservationStack() {
             screenOptions={({ navigation, route }) => screenOptions(navigation)}
         >
             <Stack.Screen name="Reservation" component={Reservation} options={{ title: 'Reservation' }} />
+        </Stack.Navigator>
+    );
+}
+function FavoritesStack() {
+    return (
+        <Stack.Navigator
+            initialRouteName="Favorites"
+            screenOptions={({ navigation, route }) => screenOptions(navigation)}
+        >
+            <Stack.Screen name="Favorites" component={Favorites} options={{ title: 'Favorites' }} />
         </Stack.Navigator>
     );
 }
@@ -197,6 +208,16 @@ export class Main extends Component {
                                 ),
                             }}
                             component={ReservationStack}
+                        />
+                        <Drawer.Screen
+                            name="My Favorites"
+                            options={{
+                                drawerLabel: 'Favorites',
+                                drawerIcon: ({ color }) => (
+                                    <Icon name="heart" type="font-awesome" size={24} color={color} />
+                                ),
+                            }}
+                            component={FavoritesStack}
                         />
                     </Drawer.Navigator>
                 </NavigationContainer>

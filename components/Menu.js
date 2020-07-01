@@ -20,7 +20,7 @@ class Menu extends Component {
                     <Tile
                         key={index}
                         title={item.name}
-                        caprion={item.description}
+                        caption={item.description}
                         featured
                         onPress={() => {
                             navigate('Dishdetail', { dishId: item.id });
