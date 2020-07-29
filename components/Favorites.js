@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity, View, StyleSheet, Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { connect } from 'react-redux';
@@ -59,11 +59,13 @@ const mapStateToProps = (state) => {
 };
 class Favorites extends Component {
     render() {
+        const closeRow = (rowMap, rowKey) => {
+            if (rowMap[rowKey]) {
+                rowMap[rowKey].closeRow();
+            }
+        };
         const { navigate } = this.props.navigation;
         const renderMenuItem = (rowData, rowMap) => {
-            console.log('====================================');
-            console.log(rowData);
-            console.log('====================================');
             return (
                 <View>
                     <ListItem
@@ -91,7 +93,6 @@ class Favorites extends Component {
             return (
                 <SafeAreaView style={{ flex: 1 }}>
                     <SwipeListView
-                        useFlatList={true}
                         data={this.props.dishes.dishes.filter((dish) =>
                             this.props.favorites.some((el) => el === dish.id),
                         )}
@@ -99,8 +100,36 @@ class Favorites extends Component {
                         keyExtractor={(item) => item.id.toString()}
                         renderHiddenItem={(rowData, rowMap) => (
                             <View style={styles.rowBack}>
-                                <TouchableOpacity onPress={() => this.props.deleteFavorite(rowData.item.id)}>
-                                    <Text>Close</Text>
+                                <TouchableOpacity
+                                    style={[ styles.backRightBtn, styles.backRightBtnLeft ]}
+                                    onPress={() => closeRow(rowMap, rowData.item.id)}
+                                >
+                                    <Text style={styles.backTextWhite}>Close</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[ styles.backRightBtn, styles.backRightBtnRight ]}
+                                    onPress={() => {
+                                        Alert.alert(
+                                            'Delete Favorite?',
+                                            'Are you sure you wish to delete the favorite dish ' +
+                                                rowData.item.name +
+                                                '?',
+                                            [
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => closeRow(rowMap, rowData.item.id),
+                                                    style: ' cancel',
+                                                },
+                                                {
+                                                    text: 'OK',
+                                                    onPress: () => this.props.deleteFavorite(rowData.item.id),
+                                                },
+                                            ],
+                                            { cancelable: false },
+                                        );
+                                    }}
+                                >
+                                    <Text style={styles.backTextWhite}>Delete</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
