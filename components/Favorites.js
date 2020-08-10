@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { deleteFavorite } from '../redux/ActionCreators';
 import { baseUrl } from '../shared/baseUrl';
 import { Loading } from './Loading';
+import * as Animatable from 'react-native-animatable';
 
 const styles = StyleSheet.create({
     container: {
@@ -67,7 +68,7 @@ class Favorites extends Component {
         const { navigate } = this.props.navigation;
         const renderMenuItem = (rowData, rowMap) => {
             return (
-                <View>
+                <Animatable.View animation="fadeInRightBig" duration={2000}>
                     <ListItem
                         key={rowData.index}
                         leftAvatar={{ source: { uri: baseUrl + rowData.item.image } }}
@@ -78,7 +79,7 @@ class Favorites extends Component {
                         }}
                         bottomDivider
                     />
-                </View>
+                </Animatable.View>
             );
         };
         if (this.props.dishes.isLoading) {
