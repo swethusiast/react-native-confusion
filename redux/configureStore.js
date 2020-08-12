@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { dishes } from './dishes';
@@ -7,11 +7,11 @@ import { promotions } from './promotions';
 import { leaders } from './leaders';
 import { favorites } from './favorites';
 import { persistStore, persistCombineReducers } from 'redux-persist';
-import storage from 'redux-persist/es/storage';
-
+import AsyncStorage from '@react-native-community/async-storage';
+// import storage from 'redux-persist/es/storage';
 const config = {
     key: 'root',
-    storage,
+    storage: AsyncStorage,
     debug: true,
 };
 

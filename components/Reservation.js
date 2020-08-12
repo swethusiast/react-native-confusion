@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Switch, Button, Modal } from 'react-native';
+import { Text, View, Alert, StyleSheet, Switch, Button, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-community/picker';
+import * as Animatable from 'react-native-animatable';
 
 export default class Reservation extends Component {
     state = {
@@ -26,7 +27,28 @@ export default class Reservation extends Component {
         this.setState({ date: selectedDate, showDate: false });
     };
     handleReservation = () => {
-        this.toggleModal();
+        // this.toggleModal();
+        Alert.alert(
+            'Your Reservation OK?',
+            'Number of Guests: ' +
+                this.state.guests +
+                ' \nSmoking?: ' +
+                this.state.smoking +
+                ' \nDate and Time: ' +
+                JSON.stringify(this.state.date) +
+                '',
+            [
+                {
+                    text: 'Cancel',
+                    style: ' cancel',
+                },
+                {
+                    text: 'OK',
+                    onPress: () => this.resetForm(),
+                },
+            ],
+            { cancelable: false },
+        );
     };
 
     resetForm = () => {
@@ -40,14 +62,13 @@ export default class Reservation extends Component {
     render() {
         const date = new Date();
         return (
-            <ScrollView>
+            <Animatable.View animation="zoomIn" duration={2000} delay={1000}>
                 <View style={styles.formRow}>
                     <Text style={styles.formLabel}>Number of Guests</Text>
                     <Picker
                         style={styles.formItem}
                         selectedValue={this.state.guests}
-                        onValueChange={(itemValue, itemIndex) => this.setState({ guests: itemValue })}
-                    >
+                        onValueChange={(itemValue, itemIndex) => this.setState({ guests: itemValue })}>
                         <Picker.Item label="1" value="1" />
                         <Picker.Item label="2" value="2" />
                         <Picker.Item label="3" value="3" />
@@ -65,12 +86,11 @@ export default class Reservation extends Component {
                         onValueChange={(value) => this.setState({ smoking: value })}
                     />
                 </View>
+
                 <View style={styles.formRow}>
                     <Text style={styles.formLabel}>Date and Time</Text>
-                    <View>
+                    <View style={styles.formRow}>
                         <Button onPress={this.showDatepicker} title="Date" />
-                    </View>
-                    <View>
                         <Button onPress={this.showTimepicker} title="Time" />
                     </View>
                     {this.state.showDate && (
@@ -98,8 +118,7 @@ export default class Reservation extends Component {
                     transparent={false}
                     visible={this.state.showModal}
                     onDismiss={() => this.toggleModal()}
-                    onRequestClose={() => this.toggleModal()}
-                >
+                    onRequestClose={() => this.toggleModal()}>
                     <View style={styles.modal}>
                         <Text style={styles.modalTitle}>Your Reservation</Text>
                         <Text style={styles.modalText}>Number of Guests: {this.state.guests}</Text>
@@ -116,7 +135,7 @@ export default class Reservation extends Component {
                         />
                     </View>
                 </Modal>
-            </ScrollView>
+            </Animatable.View>
         );
     }
 }

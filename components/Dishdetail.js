@@ -47,7 +47,13 @@ const RenderDish = ({ dish, favorite, onPress, addCommentModal }) => {
             return false;
         }
     };
-
+    const recognizeComment = ({ moveX, moveY, dx, dy }) => {
+        if (dx < 400) {
+            return true;
+        } else {
+            return false;
+        }
+    };
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: (e, gestureState) => {
             return true;
@@ -72,6 +78,8 @@ const RenderDish = ({ dish, favorite, onPress, addCommentModal }) => {
                     { cancelable: false },
                 );
                 return true;
+            } else if (recognizeComment(gestureState)) {
+                addCommentModal();
             }
         },
     });
@@ -81,11 +89,8 @@ const RenderDish = ({ dish, favorite, onPress, addCommentModal }) => {
                 animation="fadeInDown"
                 duration={2000}
                 delay={1000}
-                ref={(ref) => {
-                    this.view = ref;
-                }}
-                {...panResponder.panHandlers}
-            >
+                ref={(ref) => (this.view = ref)}
+                {...panResponder.panHandlers}>
                 <Card featuredTitle={dish.name} image={{ uri: baseUrl + dish.image }}>
                     <Text style={{ margin: 10 }}>{dish.description}</Text>
                     <View
@@ -93,8 +98,7 @@ const RenderDish = ({ dish, favorite, onPress, addCommentModal }) => {
                             flex: 1,
                             flexDirection: 'row',
                             justifyContent: 'center',
-                        }}
-                    >
+                        }}>
                         <Icon
                             raised
                             reverse
@@ -165,9 +169,8 @@ class Dishdetail extends Component {
                     transparent={false}
                     visible={this.state.showModal}
                     onDismiss={() => this.toggleModal()}
-                    onRequestClose={() => this.toggleModal()}
-                >
-                    <Rating onFinishRating={this.ratingCompleted} showRating fractions="1" />
+                    onRequestClose={() => this.toggleModal()}>
+                    <Rating onFinishRating={this.ratingCompleted} showRating fractions={1} />
                     <Input
                         placeholder="Author"
                         onChangeText={(value) => this.setState({ author: value })}
