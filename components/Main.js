@@ -10,6 +10,7 @@ import Contact from './ContactUs';
 import Dishdetail from './Dishdetail';
 import Reservation from './Reservation';
 import Favorites from './Favorites';
+import Login from './Login';
 
 import Home from './Home';
 import Menu from './Menu';
@@ -44,6 +45,13 @@ const screenOptions = (navigation) => {
         ),
     };
 };
+function LoginStack() {
+    return (
+        <Stack.Navigator initialRouteName="Login" screenOptions={({ navigation, route }) => screenOptions(navigation)}>
+            <Stack.Screen name="Login" component={Login} options={{ title: 'Login' }} />
+        </Stack.Navigator>
+    );
+}
 function HomeStack() {
     return (
         <Stack.Navigator initialRouteName="Home" screenOptions={({ navigation, route }) => screenOptions(navigation)}>
@@ -55,8 +63,7 @@ function ReservationStack() {
     return (
         <Stack.Navigator
             initialRouteName="Reservation"
-            screenOptions={({ navigation, route }) => screenOptions(navigation)}
-        >
+            screenOptions={({ navigation, route }) => screenOptions(navigation)}>
             <Stack.Screen name="Reservation" component={Reservation} options={{ title: 'Reservation' }} />
         </Stack.Navigator>
     );
@@ -65,8 +72,7 @@ function FavoritesStack() {
     return (
         <Stack.Navigator
             initialRouteName="Favorites"
-            screenOptions={({ navigation, route }) => screenOptions(navigation)}
-        >
+            screenOptions={({ navigation, route }) => screenOptions(navigation)}>
             <Stack.Screen name="Favorites" component={Favorites} options={{ title: 'Favorites' }} />
         </Stack.Navigator>
     );
@@ -75,8 +81,7 @@ function ContactStack() {
     return (
         <Stack.Navigator
             initialRouteName="Contact"
-            screenOptions={({ navigation, route }) => screenOptions(navigation)}
-        >
+            screenOptions={({ navigation, route }) => screenOptions(navigation)}>
             <Stack.Screen name="Contact" component={Contact} options={{ title: 'Contact Us' }} />
         </Stack.Navigator>
     );
@@ -99,8 +104,7 @@ function RootStack() {
                 headerTintColor: '#fff',
                 headerTitleStyle: { color: '#fff' },
                 gestureEnabled: true,
-            }}
-        >
+            }}>
             <Stack.Screen
                 name="Menu"
                 component={Menu}
@@ -164,8 +168,15 @@ export class Main extends Component {
                                 marginVertical: 5,
                             },
                         }}
-                        drawerContent={(props) => <CustomDrawerContent {...props} />}
-                    >
+                        drawerContent={(props) => <CustomDrawerContent {...props} />}>
+                        <Drawer.Screen
+                            name="Login"
+                            options={{
+                                drawerLabel: 'Login',
+                                drawerIcon: ({ color }) => <Icon name="Login" size={24} color={color} />,
+                            }}
+                            component={LoginStack}
+                        />
                         <Drawer.Screen
                             name="Home"
                             options={{
