@@ -3,7 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Constants from 'expo-constants';
 import React, { Component } from 'react';
-import { Image, Platform, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, SafeAreaView, StyleSheet, Text, View, ToastAndroid } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+
 import { Icon } from 'react-native-elements';
 import About from './AboutUs';
 import Contact from './ContactUs';
@@ -155,7 +157,42 @@ export class Main extends Component {
         this.props.fetchLeaders();
         this.props.fetchPromotions();
         this.props.fetchComments();
+        NetInfo.fetch().then((connectionInfo) => {
+            ToastAndroid.show(
+                'Initial Network Connectivity Type: ' +
+                    connectionInfo.type +
+                    ', effectiveType: ' +
+                    connectionInfo.isConnected,
+                ToastAndroid.LONG,
+            );
+        });
+
+        // NetInfo.addEventListener('connectionChange', this.handleConnectivityChange);
     }
+    // Subscribe
+    unsubscribe = () =>
+        NetInfo.addEventListener((state) => {
+            switch (state.type) {
+                case 'none':
+                    ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+                    break;
+                case 'wifi':
+                    ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+                    break;
+                case 'cellular':
+                    ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+                    break;
+                case 'unknown':
+                    ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+                    break;
+                default:
+                    break;
+            }
+        });
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
     render() {
         return (
             <SafeAreaProvider style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }}>
@@ -173,7 +210,9 @@ export class Main extends Component {
                             name="Login"
                             options={{
                                 drawerLabel: 'Login',
-                                drawerIcon: ({ color }) => <Icon name="Login" size={24} color={color} />,
+                                drawerIcon: ({ color }) => (
+                                    <Icon name="login" type="material-community" size={24} color={color} />
+                                ),
                             }}
                             component={LoginStack}
                         />

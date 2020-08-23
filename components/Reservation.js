@@ -3,7 +3,9 @@ import { Text, View, Alert, StyleSheet, Switch, Button, Modal } from 'react-nati
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-community/picker';
 import * as Animatable from 'react-native-animatable';
-import { Permissions, Notifications } from 'expo';
+import { Notifications } from 'expo';
+import * as Calendar from 'expo-calendar';
+import * as Permissions from 'expo-permissions';
 
 export default class Reservation extends Component {
     state = {
@@ -27,28 +29,31 @@ export default class Reservation extends Component {
     onChange = (event, selectedDate) => {
         this.setState({ date: selectedDate, showDate: false });
     };
+    confirmReservation(date) {
+        this.presentLocalNotification(date);
+        this.addReservationToCalendar(date);
+        this.resetForm();
+    }
     handleReservation = () => {
-        // this.toggleModal();
+        const { date, guests, smoking } = this.state;
         Alert.alert(
             'Your Reservation OK?',
             'Number of Guests: ' +
-                this.state.guests +
+                guests +
                 ' \nSmoking?: ' +
-                this.state.smoking +
+                smoking +
                 ' \nDate and Time: ' +
-                JSON.stringify(this.state.date) +
+                JSON.stringify(date) +
                 '',
             [
                 {
                     text: 'Cancel',
                     style: ' cancel',
+                    onPress: () => this.resetForm(),
                 },
                 {
                     text: 'OK',
-                    onPress: () => {
-                        this.presentLocalNotification(this.state.date);
-                        this.resetForm();
-                    },
+                    onPress: () => this.confirmReservation(date),
                 },
             ],
             { cancelable: false },
@@ -63,7 +68,29 @@ export default class Reservation extends Component {
             showModal: false,
         });
     };
-    async obtainNotificationPermission() {
+    async obtainCalendarPermission() {
+        const { status } = await Calendar.requestCalendarPermissionsAsync();
+        if (status === 'granted') {
+            const calendars = await Calendar.getCalendarsAsync();
+            const defaultCalendars = calendars.filter((each) => each.source.name === 'Default');
+            return defaultCalendars[0].source;
+        }
+    }
+
+    async addReservationToCalendar(date) {
+        await this.obtainCalendarPermission();
+        const startDate = new Date(Date.parse(date));
+        const endDate = new Date(Date.parse(date) + 2 * 60 * 60 * 1000); // 2 hours
+        Calendar.createEventAsync(Calendar.DEFAULT, {
+            title: 'Con Fusion Table Reservation',
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong',
+            startDate,
+            endDate,
+            timeZone: 'Asia/Hong_Kong',
+        });
+        Alert.alert('Reservation has been added to your calendar');
+    }
+    obtainNotificationPermission = async () => {
         let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
         if (permission.status !== 'granted') {
             permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
@@ -72,7 +99,7 @@ export default class Reservation extends Component {
             }
         }
         return permission;
-    }
+    };
 
     async presentLocalNotification(date) {
         await this.obtainNotificationPermission();
